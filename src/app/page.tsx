@@ -1,3 +1,9 @@
+import { CreateNewProductForm } from '@/components/forms/create-new-product-form'
+
 export default function Home() {
-  return <h1>Home</h1>
+  return (
+    <div className="max-w-sm mx-auto py-24">
+      <CreateNewProductForm />
+    </div>
+  )
 }
