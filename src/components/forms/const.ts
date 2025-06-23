@@ -88,13 +88,50 @@ export const isMeasurementRequired = (clothingTypeValue: ClothingTypeValue, meas
   return getRequiredMeasurements(clothingTypeValue).includes(measurement)
 }
 
-export const clothingStatusValues = ['new', 'new-with-label', 'new-without-label', 'used'] as const
-
-export type ClothingStatusValue = (typeof clothingStatusValues)[number]
-
-export const clothingStatusLabelsMap = {
-  new: 'Nuevo',
-  'new-with-label': 'Nuevo con etiqueta',
-  'new-without-label': 'Nuevo sin etiqueta',
-  used: 'Usado'
+// Define the clothing status structure
+export interface ClothingStatus {
+  label: string
+  value: ClothingStatusValue
 }
+
+// Define clothing status values as a union type for better type safety
+export type ClothingStatusValue = 'new' | 'new-with-label' | 'new-without-label' | 'used'
+
+// Define clothing statuses with their labels
+export const clothingStatusData: ClothingStatus[] = [
+  { label: 'Nuevo', value: 'new' },
+  { label: 'Nuevo con etiqueta', value: 'new-with-label' },
+  { label: 'Nuevo sin etiqueta', value: 'new-without-label' },
+  { label: 'Usado', value: 'used' }
+]
+
+// Export just the values for the form schema
+export const clothingStatusValues = clothingStatusData.map((status) => status.value)
+
+// Helper function to get clothing status label by value
+export const getClothingStatusLabel = (statusValue: ClothingStatusValue): string => {
+  const status = clothingStatusData.find((s) => s.value === statusValue)
+  return status?.label || statusValue
+}
+
+// Define clothing sizes values as a union type for better type safety
+export type ClothingSizeValue = 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl'
+
+// Define the clothing size structure
+export interface ClothingSize {
+  label: string
+  value: ClothingSizeValue
+}
+
+// Define clothing sizes with their labels
+export const clothingSizesData: ClothingSize[] = [
+  { label: 'XS', value: 'xs' },
+  { label: 'S', value: 's' },
+  { label: 'M', value: 'm' },
+  { label: 'L', value: 'l' },
+  { label: 'XL', value: 'xl' },
+  { label: 'XXL', value: 'xxl' }
+]
+
+// Export just the values for the form schema
+export const clothingSizesValues = clothingSizesData.map((size) => size.value)

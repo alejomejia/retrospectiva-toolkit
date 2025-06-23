@@ -204,10 +204,21 @@ type FormSelectFieldProps = {
   name: string
   label: string
   description?: string
+  initialPlaceholder?: string
+  placeholder?: string
   options: FormSelectOption[]
 }
 
-export function FormSelectField({ form, control, name, label, description, options }: FormSelectFieldProps) {
+export function FormSelectField({
+  form,
+  control,
+  name,
+  label,
+  description,
+  initialPlaceholder = '',
+  placeholder,
+  options
+}: FormSelectFieldProps) {
   const [popoverOpen, setPopoverOpen] = useState(false)
 
   return (
@@ -216,7 +227,7 @@ export function FormSelectField({ form, control, name, label, description, optio
       name={name}
       render={({ field }) => (
         <FormItem className="flex flex-col">
-          <FormLabel>{label} </FormLabel>
+          <FormLabel>{label}</FormLabel>
           <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
             <PopoverTrigger asChild>
               <FormControl>
@@ -225,16 +236,14 @@ export function FormSelectField({ form, control, name, label, description, optio
                   role="combobox"
                   className={cn('w-full justify-between', !field.value && 'text-muted-foreground')}
                 >
-                  {field.value
-                    ? options.find((type) => type.value === field.value)?.label
-                    : 'Selecciona un tipo de prenda'}
+                  {field.value ? options.find((type) => type.value === field.value)?.label : initialPlaceholder}
                   <ChevronsUpDown className="opacity-50" />
                 </Button>
               </FormControl>
             </PopoverTrigger>
             <PopoverContent className="w-96 p-0">
               <Command>
-                <CommandInput placeholder="Buscar tipo de prenda..." className="h-9" />
+                <CommandInput placeholder={placeholder} className="h-9" />
                 <CommandList>
                   <CommandEmpty>El tipo de prenda no existe.</CommandEmpty>
                   <CommandGroup>
@@ -243,7 +252,7 @@ export function FormSelectField({ form, control, name, label, description, optio
                         value={type.label}
                         key={type.value}
                         onSelect={() => {
-                          form.setValue('type', type.value)
+                          form.setValue(name, type.value)
                           setPopoverOpen(false)
                         }}
                       >

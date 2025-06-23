@@ -1,36 +1,121 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Retrospectiva Toolkit
+
+A modern toolkit for managing Retrospectiva Store using Google Sheets as a database.
+
+## Overview
+
+Retrospectiva Toolkit is a Next.js application that helps our team do some store normal day to day tasks. The application uses **Google Sheets as its database**, providing a familiar and accessible way to store and manage data.
+
+## Tech Stack
+
+- **Framework**: Next.js 15 with TypeScript and App Router
+- **UI Components**: Shadcn
+- **Forms**: React Hook Form with Zod validation
+- **Database**: Google Sheets API
+- **Styling**: Tailwind CSS
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js (version 18 or higher)
+- pnpm (recommended) or npm
+- Google account for Google Sheets API setup
+
+### Installation
+
+1. Clone the repository:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd retrospectiva-toolkit
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. Set up Google Sheets API:
 
-## Learn More
+- Follow the [Google Sheets API Setup Guide](./docs/setup-google-sheets-api.md)
+- Configure your environment variables
 
-To learn more about Next.js, take a look at the following resources:
+4. Run the development server:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-## Deploy on Vercel
+## Database Setup
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This project uses **Google Sheets as its primary database**. This approach provides several benefits:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- ✅ **No complex database setup required**
+- ✅ **Familiar interface for data management**
+- ✅ **Easy backup and sharing capabilities**
+- ✅ **Real-time collaboration features**
+- ✅ **No hosting costs for database**
+
+### Setup Instructions
+
+To configure Google Sheets as your database, follow the detailed setup guide:
+
+📖 **[Google Sheets API Setup Guide](./docs/setup-google-sheets-api.md)**
+
+This guide includes:
+
+- Google Cloud Console setup
+- Service account creation
+- API key generation
+- Environment variable configuration
+- Security best practices
+
+## Environment Variables
+
+Create a `.env.local` file in the root directory:
+
+```env
+# Google Sheets API Configuration
+GOOGLE_SERVICE_ACCOUNT_KEY='{"type":"service_account",...}'
+GOOGLE_SHEET_ID=your_sheet_id_here
+```
+
+## Development
+
+```bash
+# Start development server
+pnpm dev
+
+# Build for production
+pnpm build
+
+# Start production server
+pnpm start
+
+# Run linting
+pnpm lint
+```
+
+## Project Structure
+
+```
+retrospectiva-toolkit/
+├── docs/                    # Documentation
+│   └── setup-google-sheets-api.md
+├── src/                     # Source code
+├── public/                  # Static assets
+├── components.json          # UI components configuration
+└── README.md               # This file
+```
+
+## License
+
+This project is private and proprietary.
+
+---
+
+Built with ❤️ using Next.js and Google Sheets API

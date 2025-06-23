@@ -3,8 +3,10 @@
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/atoms/button'
+import { addProduct } from '@/lib/googleapis/actions'
 
 import {
   Form,
@@ -17,15 +19,17 @@ import {
 } from '@/components/molecules/form-fields'
 
 import {
-  clothingStatusLabelsMap,
-  clothingStatusValues,
+  clothingStatusData,
+  clothingSizesData,
   clothingTypesData,
   clothingTypesValues,
+  clothingSizesValues,
   isMeasurementRequired,
-  type ClothingTypeValue
+  type ClothingTypeValue,
+  type ClothingSizeValue
 } from './const'
 
-const formSchema = z.object({
+export const addProductFormSchema = z.object({
   name: z.string().min(5, {
     message: 'El nombre del producto debe tener al menos 5 caracteres'
   }),
@@ -35,6 +39,7 @@ const formSchema = z.object({
   price: z.coerce.number().min(1, {
     message: 'El precio del producto debe ser mayor a 0'
   }),
+  size: z.enum(clothingSizesValues as [ClothingSizeValue]),
   is_deadstock: z.boolean(),
   details: z.string().optional(),
   type: z.enum(clothingTypesValues as [ClothingTypeValue]),
@@ -47,14 +52,14 @@ const formSchema = z.object({
   size_length: z.coerce.number().optional()
 })
 
-export function CreateNewProductForm() {
-  // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+export function CreateProductForm() {
+  const form = useForm<z.infer<typeof addProductFormSchema>>({
+    resolver: zodResolver(addProductFormSchema),
     defaultValues: {
       name: '',
-      price: 0,
       status: 'new',
+      price: 0,
+      size: 'm',
       is_deadstock: false,
       details: '',
       type: 'shirt',
@@ -68,11 +73,11 @@ export function CreateNewProductForm() {
     }
   })
 
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log('Form submitted successfully:', values)
+  function onSubmit(values: z.infer<typeof addProductFormSchema>) {
+    addProduct(values)
+
+    toast.success('Producto agregado correctamente')
+    // form.reset()
   }
 
   function onError(errors: unknown) {
@@ -90,14 +95,20 @@ export function CreateNewProductForm() {
           placeholder="Camisa vintage hawaiana"
         />
 
-        <FormRadioField
-          control={form.control}
-          name="status"
-          label="Estado"
-          options={clothingStatusValues.map((value) => ({ label: clothingStatusLabelsMap[value], value }))}
-        />
+        <FormRadioField control={form.control} name="status" label="Estado" options={clothingStatusData} />
 
         <FormNumberField control={form.control} name="price" label="Precio" placeholder="19.99" prefix="€" />
+
+        <FormSelectField
+          form={form}
+          control={form.control}
+          name="size"
+          label="Talla"
+          initialPlaceholder="Selecciona una talla"
+          placeholder="Buscar talla..."
+          options={clothingSizesData}
+        />
+
         <FormSwitchField control={form.control} name="is_deadstock" label="Es deadstock?" />
 
         <FormTextareaField
@@ -113,6 +124,8 @@ export function CreateNewProductForm() {
           name="type"
           label="Tipo de prenda"
           description="Necesario para desplegar los campos para las tallas en caso de ser necesario"
+          initialPlaceholder="Selecciona un tipo de prenda"
+          placeholder="Buscar tipo de prenda..."
           options={clothingTypesData}
         />
 
@@ -120,19 +133,43 @@ export function CreateNewProductForm() {
           <FormNumberField control={form.control} name="size_shoulder" label="Hombro a hombro" suffix="cm" />
         )}
         {isMeasurementRequired(form.watch('type'), 'chest') && (
-          <FormNumberField control={form.control} name="size_chest" label="Pecho" suffix="cm" />
+          <FormNumberField
+            control={form.control}
+            name="size_chest"
+            label="Pecho"
+            description="El valor automaticamente se multiplica por 2"
+            suffix="cm"
+          />
         )}
         {isMeasurementRequired(form.watch('type'), 'waist') && (
-          <FormNumberField control={form.control} name="size_waist" label="Cintura" suffix="cm" />
+          <FormNumberField
+            control={form.control}
+            name="size_waist"
+            label="Cintura"
+            description="El valor automaticamente se multiplica por 2"
+            suffix="cm"
+          />
         )}
         {isMeasurementRequired(form.watch('type'), 'hip') && (
-          <FormNumberField control={form.control} name="size_hip" label="Cadera" suffix="cm" />
+          <FormNumberField
+            control={form.control}
+            name="size_hip"
+            label="Cadera"
+            description="El valor automaticamente se multiplica por 2"
+            suffix="cm"
+          />
         )}
         {isMeasurementRequired(form.watch('type'), 'rise') && (
           <FormNumberField control={form.control} name="size_rise" label="Tiro" suffix="cm" />
         )}
         {isMeasurementRequired(form.watch('type'), 'leg') && (
-          <FormNumberField control={form.control} name="size_leg" label="Pierna" suffix="cm" />
+          <FormNumberField
+            control={form.control}
+            name="size_leg"
+            label="Pierna"
+            description="El valor automaticamente se multiplica por 2"
+            suffix="cm"
+          />
         )}
         {isMeasurementRequired(form.watch('type'), 'length') && (
           <FormNumberField control={form.control} name="size_length" label="Largo" suffix="cm" />
