@@ -120,6 +120,10 @@
     @apply bg-background text-foreground;
   }
 
+  button {
+    cursor: pointer;
+  }
+
   /* disable number input spinners */
   input[type='number'] {
     -moz-appearance: textfield;
