@@ -1,21 +1,13 @@
 import { unstable_cache } from 'next/cache'
+
 import { DataTable } from '@/components/molecules/data-table'
 
 import { columns } from './columns'
-
 import { transformRawProducts } from './utils'
-
-async function getSheetProducts(): Promise<string[][]> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3001'
-  const products = await fetch(`${baseUrl}/api/sheet/product`)
-  const response = await products.json()
-
-  // The API returns { status: 200, data: Product[] }
-  return response.data ?? []
-}
+import { getProducts } from '../services'
 
 // Cache the data fetching with a tag for revalidation
-const getCachedSheetProducts = unstable_cache(getSheetProducts, ['sheet-products'], {
+const getCachedSheetProducts = unstable_cache(getProducts, ['sheet-products'], {
   tags: ['products']
 })
 

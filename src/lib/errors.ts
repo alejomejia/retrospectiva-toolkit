@@ -20,3 +20,4 @@ function createErrorFactory(name: string) {
 export const EnvironmentVariablesError = createErrorFactory('EnvironmentVariablesError')
 export const FileSystemError = createErrorFactory('FileSystemError')
 export const FetchError = createErrorFactory('FetchError')
+export const ServiceError = createErrorFactory('ServiceError')
