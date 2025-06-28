@@ -1,3 +1,5 @@
+import { Suspense } from 'react'
+
 import { PageTitle } from '@/components/molecules/page-title'
 
 import { AddProductDrawer } from '@/features/products/add-product/add-product-drawer'
@@ -8,7 +10,9 @@ export default function ProductsPage() {
     <>
       <PageTitle title="Productos" right={<AddProductDrawer />} />
       <main className="max-w-7xl mx-auto p-6">
-        <ProductList />
+        <Suspense fallback={<div className="flex items-center justify-center p-8">Cargando productos...</div>}>
+          <ProductList />
+        </Suspense>
       </main>
     </>
   )
