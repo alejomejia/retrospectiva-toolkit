@@ -35,7 +35,7 @@ export const transformRawProducts = (rawData: string[][]): ProductSheetRecord[] 
       price: parseFloat(price) || 0,
       condition: condition as ProductSheetRecord['condition'],
       size: size as ProductSheetRecord['size'],
-      is_deadstock: is_deadstock === 'true',
+      is_deadstock: is_deadstock === 'TRUE',
       details: details || '',
       type: type as ProductSheetRecord['type'],
       size_shoulder: size_shoulder ? parseFloat(size_shoulder) : undefined,
@@ -98,7 +98,7 @@ export const createProductDescription = (product: ProductSheetRecord) => {
     .join('\n')
 
   const deadstockLabel = is_deadstock
-    ? '\n✨ Esta es una prenda deadstock, es decir, de colecciones pasadas que nunca llegó a venderse ni usarse y se encuentra nueva.'
+    ? '✨ Esta es una prenda deadstock, es decir, de colecciones pasadas que nunca llegó a venderse ni usarse y se encuentra nueva.\n'
     : ''
 
   const deadstockSection = deadstockLabel ? `\n${deadstockLabel}` : ''
@@ -110,7 +110,7 @@ Si te interesa envíanos un mensaje directo 😊
 
 PRECIO: ${priceLabel}
 
-📏 Medidas tomadas en plano.
+📏 Medidas
 
 ${measurements}
 

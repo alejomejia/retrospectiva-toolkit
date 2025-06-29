@@ -37,13 +37,13 @@ import { GOOGLE_SHEETS_RANGES } from './const'
  * ```
  *
  * @see {@link GoogleSheetsService} The service used to interact with Google Sheets
- * @see {@link GOOGLE_SHEETS_RANGES.PRODUCTS} The sheet range being fetched
+ * @see {@link GOOGLE_SHEETS_RANGES.GET_PRODUCTS} The sheet range being fetched
  * @see {@link ServiceError} The error type thrown on failure
  */
 export async function getProducts(): Promise<string[][]> {
   try {
     const sheets = new GoogleSheetsService()
-    return await sheets.get(GOOGLE_SHEETS_RANGES.PRODUCTS)
+    return await sheets.get(GOOGLE_SHEETS_RANGES.GET_PRODUCTS)
   } catch (e) {
     throw new ServiceError('Error fetching products', {
       error: e

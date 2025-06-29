@@ -49,4 +49,15 @@ export class GoogleSheetsService {
 
     return response.data
   }
+
+  async delete(range: string) {
+    const sheets = await getGoogleSheetsClient()
+
+    const response = await sheets.spreadsheets.values.clear({
+      spreadsheetId: this.spreadsheetId,
+      range
+    })
+
+    return response.data
+  }
 }

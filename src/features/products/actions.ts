@@ -44,7 +44,16 @@ export const addProduct = async (product: Product) => {
     deleted_at: null
   }
 
-  await sheets.append(GOOGLE_SHEETS_RANGES.PRODUCTS, [Object.values(record)])
+  await sheets.append(GOOGLE_SHEETS_RANGES.GET_PRODUCTS, [Object.values(record)])
+
+  // Revalidate the cache for products data
+  revalidateTag('products')
+}
+
+export const deleteProducts = async () => {
+  const sheets = new GoogleSheetsService()
+
+  await sheets.delete(GOOGLE_SHEETS_RANGES.DELETE_PRODUCTS)
 
   // Revalidate the cache for products data
   revalidateTag('products')
