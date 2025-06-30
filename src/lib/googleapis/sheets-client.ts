@@ -1,6 +1,6 @@
 import { google } from 'googleapis'
 
-import { GOOGLE_SHEETS_CONFIG } from '@/lib/config'
+import { GOOGLE_SHEETS_CLIENT_CONFIG } from '@/lib/config'
 import { EnvironmentVariablesError } from '@/lib/errors'
 
 let sheetsClient: any = null
@@ -11,7 +11,7 @@ export async function getGoogleSheetsClient() {
     return sheetsClient
   }
 
-  const { projectId, privateKey, clientEmail, clientId } = GOOGLE_SHEETS_CONFIG
+  const { projectId, privateKey, clientEmail, clientId } = GOOGLE_SHEETS_CLIENT_CONFIG
 
   if (!projectId || !privateKey || !clientEmail || !clientId) {
     throw new EnvironmentVariablesError('Missing environment variables', {

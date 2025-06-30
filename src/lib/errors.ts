@@ -129,3 +129,4 @@ export const EnvironmentVariablesError = createErrorFactory('EnvironmentVariable
 export const FileSystemError = createErrorFactory('FileSystemError')
 export const FetchError = createErrorFactory('FetchError')
 export const ServiceError = createErrorFactory('ServiceError')
+export const AuthenticationError = createErrorFactory('AuthenticationError')

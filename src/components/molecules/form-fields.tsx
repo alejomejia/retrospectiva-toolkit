@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { FormProvider, type Control, type UseFormReturn } from 'react-hook-form'
-import { Check, ChevronsUpDown } from 'lucide-react'
+import { Check, ChevronsUpDown, Eye, EyeClosed } from 'lucide-react'
 
 import { Input } from '@/components/atoms/input'
 import { Switch } from '@/components/atoms/switch'
@@ -23,9 +23,14 @@ type FormTextFieldProps = {
   label: string
   description?: string
   placeholder?: string
+  isPassword?: boolean
 }
 
-export function FormTextField({ control, name, label, description, placeholder }: FormTextFieldProps) {
+export function FormTextField({ control, name, label, description, placeholder, isPassword }: FormTextFieldProps) {
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+
+  const togglePasswordVisibility = () => setIsPasswordVisible((prev) => !prev)
+
   return (
     <FormField
       control={control}
@@ -34,7 +39,25 @@ export function FormTextField({ control, name, label, description, placeholder }
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <Input placeholder={placeholder} {...field} />
+            <div className="relative">
+              <Input
+                className={cn({ 'pr-14': isPassword })}
+                type={isPassword && !isPasswordVisible ? 'password' : 'text'}
+                placeholder={placeholder}
+                {...field}
+              />
+
+              {isPassword && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="absolute top-0 bottom-0 right-0 flex items-center justify-center max-w-10 w-full border-l border-input rounded-none"
+                  onClick={() => togglePasswordVisibility()}
+                >
+                  {isPasswordVisible ? <Eye /> : <EyeClosed />}
+                </Button>
+              )}
+            </div>
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
           <FormMessage />
