@@ -4,7 +4,7 @@ type BaseLayoutProps = {
   children: React.ReactNode
 }
 
-export function BaseLayout({ children }: BaseLayoutProps) {
+export function AuthLayout({ children }: BaseLayoutProps) {
   return (
     <div className="min-h-screen flex">
       <SideNavigation />

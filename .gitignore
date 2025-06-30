@@ -43,3 +43,6 @@ next-env.d.ts
 
 # google sheets key file
 google-apikey.json
+
+# custom
+TODOS.md
