@@ -19,7 +19,7 @@ export async function ProductList() {
     id: false,
     status: false,
     condition: false,
-    details: false,
+    description: false,
     size_shoulder: false,
     size_chest: false,
     size_waist: false,

@@ -6,14 +6,15 @@ import { Form, FormTextField } from '@/components/molecules/form-fields'
 import { useLoginForm } from './hooks/use-login-form'
 
 export function LoginForm() {
-  const { form, onFormSubmit } = useLoginForm()
+  const { form, state, onSubmit } = useLoginForm()
+  const { isSubmitting, isLoading } = state
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onFormSubmit)} className="space-y-8">
+      <form onSubmit={onSubmit} className="space-y-8">
         <FormTextField control={form.control} name="username" label="Nombre de usuario" />
         <FormTextField control={form.control} name="password" label="Contraseña" placeholder="******" isPassword />
-        <Button className="w-full" type="submit">
+        <Button className="w-full" type="submit" disabled={isSubmitting || isLoading}>
           Iniciar sesión
         </Button>
       </form>

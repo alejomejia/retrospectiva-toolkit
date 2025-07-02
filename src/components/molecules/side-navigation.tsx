@@ -3,7 +3,7 @@
 import { ShirtIcon, UserIcon } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 
-import { LogoutButton } from '@/features/users/logout-button'
+import { LogoutButton } from '@/features/users/logout/logout-button'
 import { cn } from '@/lib/utils'
 
 import { LinkButton } from './link-button'

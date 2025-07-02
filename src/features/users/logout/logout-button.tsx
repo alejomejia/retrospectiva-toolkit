@@ -8,7 +8,7 @@ import { toast } from 'sonner'
 import { Button } from '@/components/atoms/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/atoms/tooltip'
 
-import { logout } from './services'
+import { logout } from '../services'
 
 export function LogoutButton() {
   const [isLoading, setIsLoading] = useState(false)
@@ -31,6 +31,8 @@ export function LogoutButton() {
       loading: 'Cerrando sesión...',
       success: (message) => {
         router.push('/')
+        router.refresh()
+
         return message
       },
       error: (error) => ({

@@ -3,9 +3,7 @@
 import {
   Form,
   FormNumberField,
-  FormRadioField,
   FormSelectField,
-  FormSwitchField,
   FormTextareaField,
   FormTextField
 } from '@/components/molecules/form-fields'
@@ -26,7 +24,7 @@ type AddProductFormProps = {
 }
 
 export function AddProductForm({ onSubmit, onCancel }: AddProductFormProps) {
-  const { form, onFormSubmit, onError, productType } = useAddProductForm({ onSubmit })
+  const { form, onFormSubmit, onError, productType, isSubmitting } = useAddProductForm({ onSubmit })
 
   return (
     <Form {...form}>
@@ -38,9 +36,15 @@ export function AddProductForm({ onSubmit, onCancel }: AddProductFormProps) {
           placeholder="Camisa vintage hawaiana"
         />
 
-        <FormRadioField control={form.control} name="status" label="Estado" options={clothingStatus} />
-
-        <FormNumberField control={form.control} name="price" label="Precio" placeholder="19.99" prefix="€" />
+        <FormSelectField
+          form={form}
+          control={form.control}
+          name="status"
+          label="Estado"
+          initialPlaceholder="Selecciona el estado de la prenda"
+          placeholder="Buscar estado..."
+          options={clothingStatus}
+        />
 
         <FormSelectField
           form={form}
@@ -52,24 +56,7 @@ export function AddProductForm({ onSubmit, onCancel }: AddProductFormProps) {
           options={clothingConditions}
         />
 
-        <FormSelectField
-          form={form}
-          control={form.control}
-          name="size"
-          label="Talla"
-          initialPlaceholder="Selecciona una talla"
-          placeholder="Buscar talla..."
-          options={clothingSizes}
-        />
-
-        <FormSwitchField control={form.control} name="is_deadstock" label="Es deadstock?" />
-
-        <FormTextareaField
-          control={form.control}
-          name="details"
-          label="Detalles de la prenda"
-          placeholder="Su tela es viscosa y poliamida. Su color es muy lindo. Es súper fresco, perfecto para la temporada."
-        />
+        <div className="h-px w-full bg-input" />
 
         <FormSelectField
           form={form}
@@ -128,10 +115,33 @@ export function AddProductForm({ onSubmit, onCancel }: AddProductFormProps) {
           <FormNumberField control={form.control} name="size_length" label="Largo" suffix="cm" />
         )}
 
+        <div className="h-px w-full bg-input" />
+
+        <FormNumberField control={form.control} name="price" label="Precio" placeholder="19.99" prefix="€" />
+
+        <FormSelectField
+          form={form}
+          control={form.control}
+          name="size"
+          label="Talla"
+          initialPlaceholder="Selecciona una talla"
+          placeholder="Buscar talla..."
+          options={clothingSizes}
+        />
+
+        <FormTextareaField
+          control={form.control}
+          name="description"
+          label="Descripción de la prenda"
+          placeholder="Su tela es viscosa y poliamida. Su color es muy lindo. Es súper fresco, perfecto para la temporada."
+        />
+
         <div className="flex flex-col gap-3">
-          <Button type="submit">Agregar</Button>
+          <Button type="submit" disabled={isSubmitting}>
+            Agregar
+          </Button>
           {onCancel && (
-            <Button type="button" variant="outline" onClick={onCancel}>
+            <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>
               Cancelar
             </Button>
           )}

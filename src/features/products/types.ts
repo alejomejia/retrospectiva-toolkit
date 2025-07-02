@@ -69,21 +69,20 @@ export const addProductSchema = z.object({
   status: z.enum(clothingStatusValues as [ProductStatus], {
     required_error: 'Debes seleccionar un estado'
   }),
-  price: z.coerce.number().min(1, {
+  price: z.string().min(1, {
     message: 'El precio del producto debe ser mayor a 0'
   }),
   condition: z.enum(clothingConditionsValues as [ProductCondition]),
   size: z.enum(clothingSizesValues as [ProductSize]),
-  is_deadstock: z.boolean(),
-  details: z.string().optional(),
+  description: z.string().optional(),
   type: z.enum(clothingTypesValues as [ProductType]),
-  size_shoulder: z.coerce.number().optional(),
-  size_chest: z.coerce.number().optional(),
-  size_waist: z.coerce.number().optional(),
-  size_hip: z.coerce.number().optional(),
-  size_rise: z.coerce.number().optional(),
-  size_leg: z.coerce.number().optional(),
-  size_length: z.coerce.number().optional()
+  size_shoulder: z.string().optional(),
+  size_chest: z.string().optional(),
+  size_waist: z.string().optional(),
+  size_hip: z.string().optional(),
+  size_rise: z.string().optional(),
+  size_leg: z.string().optional(),
+  size_length: z.string().optional()
 })
 
 export type Product = z.infer<typeof addProductSchema>
