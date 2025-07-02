@@ -10,8 +10,6 @@ export function UserAvatar() {
   const displayedUsername = username ?? 'Anonimo'
   const avatarSrc = avatarFilename ? `/assets/${avatarFilename}.webp` : null
 
-  console.log({ user })
-
   return (
     <TooltipProvider>
       <Tooltip>

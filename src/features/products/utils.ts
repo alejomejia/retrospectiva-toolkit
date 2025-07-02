@@ -126,23 +126,43 @@ export const getClothingConditionsLabel = (conditionValue: ClothingCondition['va
 
 // Helper to multiply by 2 the following sizes: chest, waist, hip, leg
 // and keep the object with the same structure
-export const transformProductBeforeAdd = (product: Product) => {
+export const transformProductBeforeAdd = ({
+  name,
+  status,
+  price,
+  condition,
+  size,
+  description,
+  type,
+  size_shoulder,
+  size_chest,
+  size_waist,
+  size_hip,
+  size_rise,
+  size_leg,
+  size_length
+}: Product) => {
+  const multiplyBy2 = (size?: string): string => {
+    if (size === '') return ''
+
+    return String(Number(size) * 2)
+  }
+
   const transformedProduct = {
-    name: product.name,
-    status: product.status,
-    price: product.price,
-    condition: product.condition,
-    size: product.size,
-    is_deadstock: product.is_deadstock,
-    details: product.details,
-    type: product.type,
-    size_shoulder: product.size_shoulder,
-    size_chest: (product.size_chest ?? 0) * 2,
-    size_waist: (product.size_waist ?? 0) * 2,
-    size_hip: (product.size_hip ?? 0) * 2,
-    size_rise: product.size_rise,
-    size_leg: (product.size_leg ?? 0) * 2,
-    size_length: product.size_length
+    name,
+    status,
+    price,
+    condition,
+    size,
+    description,
+    type,
+    size_shoulder,
+    size_chest: multiplyBy2(size_chest),
+    size_waist: multiplyBy2(size_waist),
+    size_hip: multiplyBy2(size_hip),
+    size_rise,
+    size_leg: multiplyBy2(size_leg),
+    size_length
   }
 
   return transformedProduct

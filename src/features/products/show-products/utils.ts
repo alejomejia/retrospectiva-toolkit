@@ -12,8 +12,7 @@ export const transformRawProducts = (rawData: string[][]): ProductSheetRecord[] 
       price,
       condition,
       size,
-      is_deadstock,
-      details,
+      description,
       type,
       size_shoulder,
       size_chest,
@@ -32,19 +31,18 @@ export const transformRawProducts = (rawData: string[][]): ProductSheetRecord[] 
       id: id as ProductSheetRecord['id'],
       name: name as ProductSheetRecord['name'],
       status: status as ProductSheetRecord['status'],
-      price: parseFloat(price) || 0,
+      price: price as ProductSheetRecord['price'],
       condition: condition as ProductSheetRecord['condition'],
       size: size as ProductSheetRecord['size'],
-      is_deadstock: is_deadstock === 'TRUE',
-      details: details || '',
+      description: description || '',
       type: type as ProductSheetRecord['type'],
-      size_shoulder: size_shoulder ? parseFloat(size_shoulder) : undefined,
-      size_chest: size_chest ? parseFloat(size_chest) : undefined,
-      size_waist: size_waist ? parseFloat(size_waist) : undefined,
-      size_hip: size_hip ? parseFloat(size_hip) : undefined,
-      size_rise: size_rise ? parseFloat(size_rise) : undefined,
-      size_leg: size_leg ? parseFloat(size_leg) : undefined,
-      size_length: size_length ? parseFloat(size_length) : undefined,
+      size_shoulder: size_shoulder as ProductSheetRecord['size_shoulder'],
+      size_chest: size_chest as ProductSheetRecord['size_chest'],
+      size_waist: size_waist as ProductSheetRecord['size_waist'],
+      size_hip: size_hip as ProductSheetRecord['size_hip'],
+      size_rise: size_rise as ProductSheetRecord['size_rise'],
+      size_leg: size_leg as ProductSheetRecord['size_leg'],
+      size_length: size_length as ProductSheetRecord['size_length'],
       created_at: created_at ?? null,
       updated_at: updated_at ?? null,
       archive_at: archive_at ?? null,
@@ -57,8 +55,12 @@ export const formatPrice = (price: ProductSheetRecord['price']) => {
   return `€${price}`
 }
 
-export const formatSize = (size: number) => {
-  return size === 0 ? 'N/A' : `${size}cm`
+export const formatSize = (size: string) => {
+  return size === '' ? 'N/A' : `${size}cm`
+}
+
+export const productIsNew = (status: ProductSheetRecord['status']) => {
+  return status === 'new-with-label' || status === 'new-without-label'
 }
 
 export const createProductDescription = (product: ProductSheetRecord) => {
@@ -68,8 +70,7 @@ export const createProductDescription = (product: ProductSheetRecord) => {
     price,
     condition,
     size,
-    is_deadstock,
-    details,
+    description,
     size_shoulder,
     size_chest,
     size_waist,
@@ -83,6 +84,7 @@ export const createProductDescription = (product: ProductSheetRecord) => {
   const sizeLabel = getClothingSizeLabel(size)
   const priceLabel = formatPrice(price)
   const conditionLabel = getClothingConditionsLabel(condition)
+  const isNew = productIsNew(status)
 
   const measurements = [
     { label: 'Hombro a hombro', value: size_shoulder },
@@ -93,16 +95,15 @@ export const createProductDescription = (product: ProductSheetRecord) => {
     { label: 'Tiro', value: size_rise },
     { label: 'Largo', value: size_length }
   ]
-    .filter((measurement) => measurement.value !== 0)
+    .filter((measurement) => measurement.value !== '')
     .map(({ label, value }) => `${label} ${value}cm`)
     .join('\n')
 
-  const deadstockLabel = is_deadstock
-    ? '✨ Esta es una prenda deadstock, es decir, de colecciones pasadas que nunca llegó a venderse ni usarse y se encuentra nueva.\n'
-    : ''
+  const deadstockLabel =
+    '✨ Esta es una prenda deadstock, es decir, de colecciones pasadas que nunca llegó a venderse ni usarse y se encuentra nueva.\n'
 
-  const deadstockSection = deadstockLabel ? `\n${deadstockLabel}` : ''
-  const detailsSection = details ? `\n* ${details}` : ''
+  const deadstockSection = isNew ? `\n${deadstockLabel}` : ''
+  const descriptionSection = description ? `\n* ${description}` : ''
 
   return `🟢 DISPONIBLE - ${name} - ${statusLabel} - Talla ${sizeLabel}
 
@@ -114,10 +115,10 @@ PRECIO: ${priceLabel}
 
 ${measurements}
 
-* ${conditionLabel}\n${deadstockSection}${detailsSection}
+* ${conditionLabel}\n${deadstockSection}${descriptionSection}
 
 📸 Las primeras fotos están editadas por estética. Las tomadas en el suelo muestran el color real.
 
-📩 Si te interesa o tienes dudas, ¡envíanos un mensaje directo!
+🤖 La prenda es real, la modelo que la posa no. La imagen fue creada con IA y es solo una referencia para que te inspires en como combinarla. Cada pieza tiene su propio fit y estilo único 💃
 `
 }

@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/atoms/button'
@@ -11,13 +12,19 @@ type DeleteProductsButtonProps = {
 }
 
 export function DeleteProductsButton({ onConfirm }: DeleteProductsButtonProps) {
+  const [isDeleting, setIsDeleting] = useState(false)
+
   async function onDeleteProducts() {
     const deleteProducts = async () => {
       try {
+        setIsDeleting(true)
+
         await deleteProductsAction()
         onConfirm()
       } catch {
         throw new Error('Error al eliminar productos')
+      } finally {
+        setIsDeleting(false)
       }
     }
 
@@ -34,5 +41,9 @@ export function DeleteProductsButton({ onConfirm }: DeleteProductsButtonProps) {
     })
   }
 
-  return <Button onClick={onDeleteProducts}>Eliminar productos</Button>
+  return (
+    <Button onClick={onDeleteProducts} disabled={isDeleting}>
+      Eliminar productos
+    </Button>
+  )
 }

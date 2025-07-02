@@ -18,19 +18,18 @@ export function useAddProductForm({ onSubmit }: UseAddProductFormProps = {}) {
     defaultValues: {
       name: '',
       status: 'new-with-label',
-      price: 0,
+      price: '',
       condition: 'perfect',
       size: 'm',
-      is_deadstock: false,
-      details: '',
+      description: '',
       type: 'shirt',
-      size_shoulder: 0,
-      size_chest: 0,
-      size_waist: 0,
-      size_hip: 0,
-      size_rise: 0,
-      size_leg: 0,
-      size_length: 0
+      size_shoulder: '',
+      size_chest: '',
+      size_waist: '',
+      size_hip: '',
+      size_rise: '',
+      size_leg: '',
+      size_length: ''
     }
   })
 
@@ -55,32 +54,35 @@ export function useAddProductForm({ onSubmit }: UseAddProductFormProps = {}) {
   useEffect(() => {
     if (!productType) return
 
-    form.setValue('size_shoulder', 0)
-    form.setValue('size_chest', 0)
-    form.setValue('size_waist', 0)
-    form.setValue('size_hip', 0)
-    form.setValue('size_rise', 0)
-    form.setValue('size_leg', 0)
-    form.setValue('size_length', 0)
+    form.setValue('size_shoulder', '')
+    form.setValue('size_chest', '')
+    form.setValue('size_waist', '')
+    form.setValue('size_hip', '')
+    form.setValue('size_rise', '')
+    form.setValue('size_leg', '')
+    form.setValue('size_length', '')
   }, [productType, form])
 
   async function onFormSubmit(values: z.infer<typeof addProductSchema>) {
     const submitProduct = async () => {
       try {
         await addProduct(transformProductBeforeAdd(values))
+
+        form.reset()
+        onSubmit?.()
+
         return `${values.name} agregado correctamente`
       } catch {
         throw new Error('Error al agregar producto')
       }
     }
 
-    toast.promise(submitProduct(), {
+    // store the promise in a variable to avoid form state issues
+    const submissionPromise = submitProduct()
+
+    toast.promise(submissionPromise, {
       loading: 'Agregando producto...',
-      success: (message) => {
-        form.reset()
-        onSubmit?.()
-        return message
-      },
+      success: (message) => message,
       error: (error) => ({
         message: error.message,
         action: {
@@ -89,6 +91,8 @@ export function useAddProductForm({ onSubmit }: UseAddProductFormProps = {}) {
         }
       })
     })
+
+    return await submissionPromise
   }
 
   function onError(errors: unknown) {
@@ -100,6 +104,7 @@ export function useAddProductForm({ onSubmit }: UseAddProductFormProps = {}) {
     form,
     onFormSubmit,
     onError,
-    productType
+    productType,
+    isSubmitting: form.formState.isSubmitting
   }
 }

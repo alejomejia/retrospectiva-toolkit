@@ -30,7 +30,6 @@ export function getAllowedUserByUsername(username: string): Partial<User> | null
   return allowedUsers.find((user) => user.username === username) ?? null
 }
 
-// Validate user credentials
 export function validateCredentials(username: string, password: string): boolean {
   const allowedUsers = parseAllowedUsers()
   const user = allowedUsers.find((user) => user.username === username)
@@ -87,7 +86,6 @@ export async function getCurrentUser(): Promise<Partial<User> | null> {
   return await verifyToken(token)
 }
 
-// Set auth cookie
 export async function setAuthCookie(token: string) {
   const cookieStore = await cookies()
   cookieStore.set('auth-token', token, {
@@ -98,7 +96,6 @@ export async function setAuthCookie(token: string) {
   })
 }
 
-// Clear auth cookie
 export async function clearAuthCookie() {
   const cookieStore = await cookies()
   cookieStore.delete('auth-token')
