@@ -62,7 +62,7 @@ export interface ClothingCondition {
 }
 
 // Zod Schemas
-export const addProductSchema = z.object({
+export const productSchema = z.object({
   name: z.string().min(5, {
     message: 'El nombre del producto debe tener al menos 5 caracteres'
   }),
@@ -85,7 +85,7 @@ export const addProductSchema = z.object({
   size_length: z.string().optional()
 })
 
-export type Product = z.infer<typeof addProductSchema>
+export type Product = z.infer<typeof productSchema>
 
 export type ProductSheetRecord = Product & {
   id: string
@@ -97,5 +97,5 @@ export type ProductSheetRecord = Product & {
 
 // Type guard to check if is Product
 export const isProduct = (product: unknown): product is Product => {
-  return addProductSchema.safeParse(product).success
+  return productSchema.safeParse(product).success
 }

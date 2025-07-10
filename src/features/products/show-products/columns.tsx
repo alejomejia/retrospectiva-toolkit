@@ -1,10 +1,11 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
-
 import { Checkbox } from '@/components/atoms/checkbox'
 
 import { formatPrice, formatSize } from './utils'
+import { ProductActions } from './product-actions'
+
 import type { ProductSheetRecord } from '../types'
 import {
   getClothingConditionsLabel,
@@ -12,7 +13,6 @@ import {
   getClothingStatusLabel,
   getClothingTypeLabel
 } from '../utils'
-import { CopyProductDescription } from './copy-product-description'
 
 export const columns: ColumnDef<ProductSheetRecord>[] = [
   {
@@ -144,6 +144,7 @@ export const columns: ColumnDef<ProductSheetRecord>[] = [
   },
   {
     id: 'actions',
-    cell: ({ row }) => <CopyProductDescription product={row.original} />
+    header: 'Acciones',
+    cell: ({ row }) => <ProductActions product={row.original} />
   }
 ]

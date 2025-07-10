@@ -3,7 +3,7 @@
 import { revalidateTag } from 'next/cache'
 import { GoogleSheetsService } from '@/lib/googleapis/sheets-service'
 
-import { GOOGLE_SHEETS_RANGES } from './const'
+import { GOOGLE_SHEETS_RANGES, PRODUCTS_COLUMNS_INDEXES } from './const'
 import { isProduct, type Product, type ProductSheetRecord } from './types'
 
 /**
@@ -50,6 +50,70 @@ export const addProduct = async (product: Product) => {
   revalidateTag('products')
 }
 
+/**
+ * Updates an existing product in the Google Sheets database
+ *
+ * This function finds a product by ID and updates it with new data,
+ * preserving the original creation timestamp and updating the updated_at field.
+ *
+ * @param productId - The unique ID of the product to update
+ * @param product - The updated product data
+ * @param rawProducts - The raw products data from the context (to avoid fetching again)
+ * @returns Promise<void> - Resolves when the product has been successfully updated
+ *
+ * @throws {Error} If the product is not found or the update fails
+ */
+export const updateProduct = async (productId: string, product: Product, rawProducts: string[][]) => {
+  if (!isProduct(product)) {
+    throw new Error('Invalid product data')
+  }
+
+  const sheets = new GoogleSheetsService()
+
+  if (!rawProducts || rawProducts.length === 0) {
+    throw new Error('No products found')
+  }
+
+  // Find the product row by ID (assuming first row is headers)
+  const productRowIndex = rawProducts.findIndex((row, index) => {
+    if (index === 0) return false
+
+    return row[PRODUCTS_COLUMNS_INDEXES.ID] === productId
+  })
+
+  if (productRowIndex === -1) {
+    throw new Error('Product not found')
+  }
+
+  // Get the original product data
+  const originalProduct = rawProducts[productRowIndex]
+
+  const updatedRecord: ProductSheetRecord = {
+    id: productId,
+    ...product,
+    created_at: originalProduct[PRODUCTS_COLUMNS_INDEXES.CREATED_AT], // Preserve original creation timestamp
+    updated_at: new Date().toISOString(),
+    archive_at: originalProduct[PRODUCTS_COLUMNS_INDEXES.ARCHIVE_AT] || null,
+    deleted_at: originalProduct[PRODUCTS_COLUMNS_INDEXES.DELETED_AT] || null
+  }
+
+  // Update the specific row (adding 1 to convert from 0-based index to 1-based sheet row)
+  const rowNumber = productRowIndex + 1
+  const range = `products!A${rowNumber}:T${rowNumber}`
+
+  await sheets.update(range, [Object.values(updatedRecord)])
+
+  // Revalidate the cache for products data
+  revalidateTag('products')
+}
+
+/**
+ * Deletes all products from the Google Sheets database
+ *
+ * This function deletes all products from the configured Google Sheets range for products.
+ *
+ * @returns Promise<void> - Resolves when the products have been successfully deleted
+ */
 export const deleteProducts = async () => {
   const sheets = new GoogleSheetsService()
 
