@@ -2,6 +2,7 @@
 
 import { revalidateTag } from 'next/cache'
 import { GoogleSheetsService } from '@/lib/googleapis/sheets-service'
+import { getCurrentUser } from '@/features/users/utils.server'
 
 import { GOOGLE_SHEETS_RANGES, PRODUCTS_COLUMNS_INDEXES } from './const'
 import { isProduct, type Product, type ProductSheetRecord } from './types'
@@ -33,6 +34,7 @@ export const addProduct = async (product: Product) => {
     throw new Error('Invalid product data')
   }
 
+  const user = await getCurrentUser()
   const sheets = new GoogleSheetsService()
 
   const record: ProductSheetRecord = {
@@ -44,7 +46,8 @@ export const addProduct = async (product: Product) => {
     deleted_at: null
   }
 
-  await sheets.append(GOOGLE_SHEETS_RANGES.GET_PRODUCTS, [Object.values(record)])
+  const range = user?.role === 'col' ? GOOGLE_SHEETS_RANGES.GET_CO_PRODUCTS : GOOGLE_SHEETS_RANGES.GET_PRODUCTS
+  await sheets.append(range, [Object.values(record)])
 
   // Revalidate the cache for products data
   revalidateTag('products')
@@ -68,6 +71,7 @@ export const updateProduct = async (productId: string, product: Product, rawProd
     throw new Error('Invalid product data')
   }
 
+  const user = await getCurrentUser()
   const sheets = new GoogleSheetsService()
 
   if (!rawProducts || rawProducts.length === 0) {
@@ -99,7 +103,8 @@ export const updateProduct = async (productId: string, product: Product, rawProd
 
   // Update the specific row (adding 1 to convert from 0-based index to 1-based sheet row)
   const rowNumber = productRowIndex + 1
-  const range = `products!A${rowNumber}:T${rowNumber}`
+  const sheetName = user?.role === 'col' ? 'co-products' : 'products'
+  const range = `${sheetName}!A${rowNumber}:T${rowNumber}`
 
   await sheets.update(range, [Object.values(updatedRecord)])
 
@@ -115,9 +120,11 @@ export const updateProduct = async (productId: string, product: Product, rawProd
  * @returns Promise<void> - Resolves when the products have been successfully deleted
  */
 export const deleteProducts = async () => {
+  const user = await getCurrentUser()
   const sheets = new GoogleSheetsService()
 
-  await sheets.delete(GOOGLE_SHEETS_RANGES.DELETE_PRODUCTS)
+  const range = user?.role === 'col' ? GOOGLE_SHEETS_RANGES.DELETE_CO_PRODUCTS : GOOGLE_SHEETS_RANGES.DELETE_PRODUCTS
+  await sheets.delete(range)
 
   // Revalidate the cache for products data
   revalidateTag('products')

@@ -1,7 +1,9 @@
 // Google Sheets constants
 export const GOOGLE_SHEETS_RANGES = {
   GET_PRODUCTS: 'products!A1:T',
-  DELETE_PRODUCTS: 'products!A2:T'
+  GET_CO_PRODUCTS: 'co-products!A1:T',
+  DELETE_PRODUCTS: 'products!A2:T',
+  DELETE_CO_PRODUCTS: 'co-products!A2:T'
 }
 
 // Products columns indexes
